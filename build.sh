@@ -2,13 +2,7 @@
 set -e
 BUILD_BY="matt@traverse.com.au"
 
-if [ ! -f "/sbin/kpartx" ]; then
-	apt-get install -y kpartx
-fi
-if [ ! -f "/sbin/parted" ]; then
-	apt-get install -y parted
-fi
-
+apt-get install -y kpartx make live-build pbuilder devscripts python3-pystache python3-git python3-setuptools parted dosfstools
 #CONTAINER_NAME="vyos/vyos-build:current-arm64"
 CONTAINER_NAME="vyos-arm64-libbpf"
 PKGBUILD_CONTAINER=$(docker create -it --privileged --entrypoint "/bin/bash" -v $(pwd):/tmp/vyos-build-arm64 "${CONTAINER_NAME}")
