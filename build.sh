@@ -5,6 +5,7 @@ BUILD_BY="matt@traverse.com.au"
 apt-get install -y kpartx make live-build pbuilder devscripts python3-pystache python3-git python3-setuptools parted dosfstools
 #CONTAINER_NAME="vyos/vyos-build:current-arm64"
 CONTAINER_NAME="vyos-arm64-libbpf"
+docker build -t "${CONTAINER_NAME}" vyos-build/docker/
 PKGBUILD_CONTAINER=$(docker create -it --privileged --entrypoint "/bin/bash" -v $(pwd):/tmp/vyos-build-arm64 "${CONTAINER_NAME}")
 docker start "${PKGBUILD_CONTAINER}"
 docker exec -i -t "${PKGBUILD_CONTAINER}" /bin/bash -c 'cd /tmp/vyos-build-arm64 && ./build-packages.sh'
