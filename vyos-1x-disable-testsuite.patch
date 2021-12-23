@@ -1,13 +1,15 @@
---- a/Makefile	2021-03-07 01:37:58.006173885 +0000
-+++ b/Makefile	2021-03-07 01:38:02.122687572 +0000
-@@ -97,8 +97,8 @@
+diff --git a/Makefile b/Makefile
+index b582ef84..d5f879a9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -84,8 +84,8 @@ clean:
  
  .PHONY: test
  test:
--	set -e; python3 -m compileall -q .
+-	set -e; python3 -m compileall -q -x '/vmware-tools/scripts/, /ppp/' .
 -	PYTHONPATH=python/ python3 -m "nose" --with-xunit src --with-coverage --cover-erase --cover-xml --cover-package src/conf_mode,src/op_mode,src/completion,src/helpers,src/validators,src/tests --verbose
-+	#set -e; python3 -m compileall -q .
-+	#PYTHONPATH=python/ python3 -m "nose" --with-xunit src --with-coverage --cover-erase --cover-xml --cover-package src/conf_mode,src/op_mode,src/completion,src/helpers,src/validators --verbose
++	#set -e; python3 -m compileall -q -x '/vmware-tools/scripts/, /ppp/' .
++	#PYTHONPATH=python/ python3 -m "nose" --with-xunit src --with-coverage --cover-erase --cover-xml --cover-package src/conf_mode,src/op_mode,src/completion,src/helpers,src/validators,src/tests --verbose
  
  .PHONY: sonar
  sonar:

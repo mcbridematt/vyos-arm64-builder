@@ -13,5 +13,6 @@ docker stop "${PKGBUILD_CONTAINER}"
 docker rm "${PKGBUILD_CONTAINER}"
 
 cd vyos-build
+export VYOS_BUILD_FLAVOUR=generic-arm64
 ./configure --build-by="${BUILD_BY}" --architecture "arm64"
 make arm64
