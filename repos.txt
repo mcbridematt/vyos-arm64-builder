@@ -2,14 +2,10 @@ libvyosconfig
 vyos-1x
 vyatta-op
 vyatta-cfg-system
-vyos-nhrp
-vyatta-cfg-quagga
 vyatta-op-firewall
-vyatta-op-vpn
 vyatta-op-qos
 vyatta-cluster
 vyatta-config-mgmt
-vyatta-cfg-vpn
 vyos-world
 libpam-radius-auth
 ipaddrcheck
