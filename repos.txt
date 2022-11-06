@@ -15,3 +15,5 @@ libnss-mapuser
 vyatta-cfg
 vyatta-wanloadbalance
 vyos-utils
+vyos-user-utils
+vyos-http-api-tools
