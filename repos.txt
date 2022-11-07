@@ -18,5 +18,6 @@ vyatta-wanloadbalance
 vyos-utils
 vyos-user-utils
 vyos-http-api-tools
-vyos-biosdevname
+vyatta-biosdevname
 udp-broadcast-relay
+https://salsa.debian.org/python-team/packages/python-inotify.git
