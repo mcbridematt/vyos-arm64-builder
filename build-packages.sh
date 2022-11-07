@@ -21,8 +21,7 @@ for d in $(find -name Jenkinsfile -exec dirname {} \;); do
 	echo "BUILDING PACKAGE ${d}"
 	cd "${d}"
 	lua ../../../runjenkins.lua || :
-	for i in $(find -name *.deb); do
-		cp "${i}" "${PACKAGES_DIR}"
+	find -name \*.deb -exec cp {} "${PACKAGES_DIR}" \;
 	cd "${PACKAGES_DIR}"
 done
 
@@ -35,19 +34,19 @@ mkdir -p build
 eval $(opam env --root=/opt/opam --set-root)
 for i in $REPOS; do
 	PACKAGENAME=$i
-	if [ "${i}" == https://* ]; then
+	if [[ "${i}" = https://* ]]; then
 		PACKAGENAME=$(echo "${i}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
 		git clone "${i}" "${PACKAGENAME}"
 	else
 		git clone "https://github.com/vyos/${i}.git" "build/${i}"
 	fi
 	cd "build/${PACKAGENAME}"
-	if [ "${PACKAGENAME}" == "vyos-1x" ]; then
+	if [ "${PACKAGENAME}" = "vyos-1x" ]; then
 		patch -p1 -i ../../vyos-1x-disable-testsuite.patch
 		patch -p1 -i ../../vyos-1x-enable-xdp-build.patch
-	elif [ "${PACKAGENAME}" == "ipaddrcheck" ]; then
+	elif [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
 		rm src/*.o
-	elif [ "${PACKAGENAME}" == "python-inotify" ]; then
+	elif [ "${PACKAGENAME}" = "python-inotify" ]; then
 		patch -p1 -i "../../python-inotify-disable-test_renames.patch"
 	fi
 	dpkg-buildpackage -b -us -uc -tc
