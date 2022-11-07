@@ -2,6 +2,7 @@ libvyosconfig
 vyos-1x
 vyatta-op
 vyatta-cfg-system
+vyatta-cfg-qos
 vyatta-op-qos
 vyatta-cluster
 vyatta-config-mgmt
@@ -17,3 +18,5 @@ vyatta-wanloadbalance
 vyos-utils
 vyos-user-utils
 vyos-http-api-tools
+vyos-biosdevname
+udp-broadcast-relay
