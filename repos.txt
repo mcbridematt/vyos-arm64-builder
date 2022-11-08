@@ -20,4 +20,5 @@ vyos-user-utils
 vyos-http-api-tools
 vyatta-biosdevname
 udp-broadcast-relay
+vyos-live-build
 https://salsa.debian.org/python-team/packages/python-inotify.git
