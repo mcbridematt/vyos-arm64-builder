@@ -1,7 +1,7 @@
 libvyosconfig
 vyos-1x
 vyatta-op
-vyatta-cfg-system
+https://github.com/mcbridematt/vyatta-cfg-system.git;fix-grub-arm64
 vyatta-cfg-qos
 vyatta-op-qos
 vyatta-cluster
@@ -21,4 +21,5 @@ vyos-http-api-tools
 vyatta-biosdevname
 udp-broadcast-relay
 vyos-live-build
+live-boot
 https://salsa.debian.org/python-team/packages/python-inotify.git
