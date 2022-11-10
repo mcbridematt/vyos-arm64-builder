@@ -33,7 +33,8 @@ REPOS=$(cat repos.txt)
 mkdir -p build
 eval $(opam env --root=/opt/opam --set-root)
 for i in $REPOS; do
-	PACKAGENAME=$i
+	PACKAGENAME=$(echo "${i}" | awk -F ';' '{print $1}')
+	PACKAGECOMMIT=$(echo "{i]" | awk -F ';' '{print $2}')
 	if [[ "${i}" = https://* ]]; then
 		PACKAGENAME=$(echo "${i}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
 		git clone "${i}" "${PACKAGENAME}"
@@ -41,6 +42,9 @@ for i in $REPOS; do
 		git clone "https://github.com/vyos/${i}.git" "build/${i}"
 	fi
 	cd "build/${PACKAGENAME}"
+	if [ -n "${PACKAGECOMMIT}" ]; then
+		git checkout "${PACKAGECOMMIT}"
+	fi
 	if [ "${PACKAGENAME}" = "vyos-1x" ]; then
 		patch -p1 -i ../../vyos-1x-disable-testsuite.patch
 		patch -p1 -i ../../vyos-1x-enable-xdp-build.patch
