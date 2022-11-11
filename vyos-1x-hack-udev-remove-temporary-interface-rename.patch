@@ -1,0 +1,22 @@
+From d5e0635f17a1b50a054e64f7f9a21c767f0043a4 Mon Sep 17 00:00:00 2001
+From: Mathew McBride <matt@traverse.com.au>
+Date: Fri, 11 Nov 2022 04:50:42 +0000
+Subject: [PATCH] (HACK) udev: remove temporary interface rename
+
+For reasons I haven't been able to determine, these interfaces never get renamed
+back in VyOS proper.
+---
+ src/etc/udev/rules.d/62-temporary-interface-rename.rules | 1 -
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 src/etc/udev/rules.d/62-temporary-interface-rename.rules
+
+diff --git a/src/etc/udev/rules.d/62-temporary-interface-rename.rules b/src/etc/udev/rules.d/62-temporary-interface-rename.rules
+deleted file mode 100644
+index 4a579dca..00000000
+--- a/src/etc/udev/rules.d/62-temporary-interface-rename.rules
++++ /dev/null
+@@ -1 +0,0 @@
+-SUBSYSTEM=="net", ACTION=="add", KERNEL=="eth*", DRIVERS=="?*", NAME="e$env{IFINDEX}"
+-- 
+2.30.2
+
