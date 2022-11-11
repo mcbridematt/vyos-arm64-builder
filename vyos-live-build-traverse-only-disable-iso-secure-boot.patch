@@ -1,0 +1,27 @@
+From 835a7645ee844160e3d4cd657148bf7eaac71c79 Mon Sep 17 00:00:00 2001
+From: Mathew McBride <matt@traverse.com.au>
+Date: Thu, 10 Nov 2022 05:16:55 +0000
+Subject: [PATCH] (Traverse only) disable secure boot generation
+
+Temporary, current Ten64 firmware doesn't support the UEFI secure boot protocol
+---
+ scripts/build/binary_grub-efi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/build/binary_grub-efi b/scripts/build/binary_grub-efi
+index bd7d75f02..2be0e06ac 100755
+--- a/scripts/build/binary_grub-efi
++++ b/scripts/build/binary_grub-efi
+@@ -90,7 +90,8 @@ case "${LB_ARCHITECTURE}" in
+ esac
+ 
+ _PRE_SB_PACKAGES="${_LB_PACKAGES}"
+-_LB_PACKAGES="shim-signed grub-efi-${_SB_EFI_DEB}-signed"
++_LB_PACKAGES=""
++LB_UEFI_SECURE_BOOT=disable
+ case "${LB_UEFI_SECURE_BOOT}" in
+ 	auto)
+ 		# Use Check_installed, as Check_package will error out immediately
+-- 
+2.30.2
+

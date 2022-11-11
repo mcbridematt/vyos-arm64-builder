@@ -52,10 +52,13 @@ for i in $REPOS; do
 		rm src/*.o
 	elif [ "${PACKAGENAME}" = "python-inotify" ]; then
 		patch -p1 -i "../../python-inotify-disable-test_renames.patch"
+	elif [ "${PACKAGENAME}" = "vyos-live-build" ]; then
+		patch -p1 -i "./../vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
 	fi
 	dpkg-buildpackage -b -us -uc -tc
 	cd ../..
 done
 
+# Use our copy of live-build to do image building
+dpkg -i build/live-build*.deb
 cp build/*.deb vyos-build/packages/
-
