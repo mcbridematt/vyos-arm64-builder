@@ -34,12 +34,13 @@ mkdir -p build
 eval $(opam env --root=/opt/opam --set-root)
 for i in $REPOS; do
 	PACKAGENAME=$(echo "${i}" | awk -F ';' '{print $1}')
-	PACKAGECOMMIT=$(echo "{i]" | awk -F ';' '{print $2}')
-	if [[ "${i}" = https://* ]]; then
-		PACKAGENAME=$(echo "${i}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
-		git clone "${i}" "${PACKAGENAME}"
+	PACKAGECOMMIT=$(echo "${i}" | awk -F ';' '{print $2}')
+	if [[ "${PACKAGENAME}" = https://* ]]; then
+		PACKAGE_FOLDER_NAME=$(echo "${PACKAGENAME}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
+		git clone "${PACKAGENAME}" "build/${PACKAGE_FOLDER_NAME}"
+		PACKAGENAME="${PACKAGE_FOLDER_NAME}"
 	else
-		git clone "https://github.com/vyos/${i}.git" "build/${i}"
+		git clone "https://github.com/vyos/${PACKAGENAME}.git" "build/${PACKAGENAME}"
 	fi
 	cd "build/${PACKAGENAME}"
 	if [ -n "${PACKAGECOMMIT}" ]; then
@@ -48,12 +49,13 @@ for i in $REPOS; do
 	if [ "${PACKAGENAME}" = "vyos-1x" ]; then
 		patch -p1 -i ../../vyos-1x-disable-testsuite.patch
 		patch -p1 -i ../../vyos-1x-enable-xdp-build.patch
+		patch -p1 -i "../../vyos-1x-hack-udev-remove-temporary-interface-rename.patch"
 	elif [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
 		rm src/*.o
 	elif [ "${PACKAGENAME}" = "python-inotify" ]; then
 		patch -p1 -i "../../python-inotify-disable-test_renames.patch"
 	elif [ "${PACKAGENAME}" = "vyos-live-build" ]; then
-		patch -p1 -i "./../vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
+		patch -p1 -i "../../vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
 	fi
 	dpkg-buildpackage -b -us -uc -tc
 	cd ../..
