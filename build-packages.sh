@@ -2,6 +2,8 @@
 set -e
 export DEBEMAIL="test@example.com"
 BASEDIR=$(dirname $(readlink -f "$0"))
+PATCHES_DIR=$(readlink -f "${BASEDIR}/patches")
+
 sudo apt-get install -y clang llvm libpcap-dev xz-utils python-is-python3 libbpf-dev linux-libc-dev
 # Do linux kernel first as we need our kernel headers
 # for XDP
@@ -33,14 +35,24 @@ REPOS=$(cat repos.txt)
 mkdir -p build
 eval $(opam env --root=/opt/opam --set-root)
 for i in $REPOS; do
-	git clone "https://github.com/vyos/${i}.git" "build/${i}"
-	cd "build/${i}"
-	if [ "${i}" == "vyos-1x" ]; then
-		patch -p1 -i ../../vyos-1x-disable-testsuite.patch
-		patch -p1 -i ../../vyos-1x-enable-xdp-build.patch
+	PACKAGENAME=$(echo "${i}" | awk -F ';' '{print $1}')
+	PACKAGECOMMIT=$(echo "${i}" | awk -F ';' '{print $2}')
+	if [[ "${PACKAGENAME}" = https://* ]]; then
+		PACKAGE_FOLDER_NAME=$(echo "${PACKAGENAME}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
+		git clone "${PACKAGENAME}" "build/${PACKAGE_FOLDER_NAME}"
+		PACKAGENAME="${PACKAGE_FOLDER_NAME}"
+	else
+		git clone "https://github.com/vyos/${PACKAGENAME}.git" "build/${PACKAGENAME}"
+	fi
+	cd "build/${PACKAGENAME}"
+	if [ -n "${PACKAGECOMMIT}" ]; then
+		git checkout "${PACKAGECOMMIT}"
+	fi
+	if [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
+		rm src/*.o
 	fi
 	dpkg-buildpackage -b -us -uc -tc
-	cd ../..
+	cd "${BASEDIR}"
 done
 
 cp build/*.deb vyos-build/packages/
