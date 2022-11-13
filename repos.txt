@@ -1,5 +1,5 @@
 libvyosconfig
-vyos-1x
+https://github.com/mcbridematt/vyos-1x.git;d591cacbde61bf71af7b8941a784d21367d1ba0c
 vyatta-op
 https://github.com/mcbridematt/vyatta-cfg-system.git;fix-grub-arm64
 vyatta-cfg-qos

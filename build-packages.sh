@@ -46,11 +46,7 @@ for i in $REPOS; do
 	if [ -n "${PACKAGECOMMIT}" ]; then
 		git checkout "${PACKAGECOMMIT}"
 	fi
-	if [ "${PACKAGENAME}" = "vyos-1x" ]; then
-		patch -p1 -i ../../vyos-1x-disable-testsuite.patch
-		patch -p1 -i ../../vyos-1x-enable-xdp-build.patch
-		patch -p1 -i "../../vyos-1x-hack-udev-remove-temporary-interface-rename.patch"
-	elif [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
+	if [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
 		rm src/*.o
 	elif [ "${PACKAGENAME}" = "python-inotify" ]; then
 		patch -p1 -i "../../python-inotify-disable-test_renames.patch"
