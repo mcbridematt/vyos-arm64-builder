@@ -55,5 +55,6 @@ for i in $REPOS; do
 	cd "${BASEDIR}"
 done
 
+# Use our copy of live-build to do image building
+dpkg -i build/live-build*.deb
 cp build/*.deb vyos-build/packages/
-
