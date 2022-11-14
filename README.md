@@ -47,6 +47,11 @@ and then packages and image.
 
 An ISO image will be generated under `vyos-build/build/vyos-{VYOS_VERSION}.{YYYYMMDDHHMM}-arm64.iso`
 
+# Package commit pinning
+The source versions of each component are "pinned" to a commit or branch in `repos.txt` to ensure this
+environment will produce a working image. To use the latest available current/development versions,
+copy `repos.development.txt` in its place.
+
 # Testing inside a VM
 The `./testimg.sh` script can be used to boot
 the generated qcow2 image as a QEMU/KVM virtual machine.
