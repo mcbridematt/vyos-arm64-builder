@@ -32,6 +32,11 @@ AppArmor on Ubuntu
 
 * sudo access from the current user
 
+# Other efforts:
+
+Graham Hayes built his own version here: [https://github.com/grahamhayes/vyos-build/](https://github.com/grahamhayes/vyos-build/). The main difference is that this one doesn't use a container to do builds. See [Ten64 forum discussion](https://forum.traverse.com.au/t/vyos-build-my-repo/181)
+
+
 # Usage:
 Run ./build.sh to build the 'vyos-build' container
 and then packages and image.
@@ -40,7 +45,7 @@ and then packages and image.
 ./build.sh
 ```
 
-A qcow2 image will be generated under vyos-build/build/VyOS-YYYYMMDD.qcow2
+An ISO image will be generated under `vyos-build/build/vyos-{VYOS_VERSION}.{YYYYMMDDHHMM}-arm64.iso`
 
 # Testing inside a VM
 The `./testimg.sh` script can be used to boot
@@ -56,13 +61,46 @@ the [qemu-efi-aarch64](https://packages.debian.org/buster/qemu-efi-aarch64) pack
 or grab a build from [retrage/edk2-nightly](https://retrage.github.io/edk2-nightly/).
 
 ```
-cp vyos-build/build/VyOS-YYYYMMDD.qcow2 VyOS.qcow2
+cp vyos-build/build/vyos-{VYOS_VERSION}.{YYYYMMDDHHMM}-arm64.iso vyos.iso
 sudo ./testimg.sh
 ```
 (Hint: Use Ctrl-X to immediately exit qemu).
 
-# Known issues:
+# Running on real hardware (Ten64)
+On a Ten64 a suitable block medium (NVMe SSD, USB drive or SD card) is needed.
+It might be possible to fit VyOS into the onboard NAND/ubifs in the future.
 
-* It should be possible to generate an ISO image using
-the usual `make iso`, however, there appears to be issues
-with the syslinux setup.
+Write the VyOS ISO to a USB drive using dd or a similar tool:
+
+```
+dd if=vyos.iso of=/dev/sda
+```
+
+Then boot into the 'live' VyOS system and do an install:
+
+```
+vyos@vyos:~$ install image
+```
+
+See the [VyOS Installation doc](https://docs.vyos.io/en/latest/installation/install.html#live-installation) for more
+information.
+
+# Known issues:
+*  On a Ten64, when the live image is booted from USB, there may be a hang on reboot
+   as something tries to do a write to the USB.
+   You will need to restart the system using the reset button if this happens.
+*  There are some hacks to bypass or remove certain aspects that can cause trouble:
+   * udev interface renaming rules and biosdevname handling - need to debug issues with this not working properly.
+   * Only one GRUB console entry - "VyOS" is added, vs x86 VyOS which has KVM/serial/USB serial choices.
+   As long as the system firmware has the "chosen" console set correctly (in FDT or ACPI), there
+   should be no issues as systemd and the kernel will chose the "right" console.
+   
+       Forcing an "external" console is a use-case we will need to consider.
+   (Also, systems with the ARM standard UART, like `qemu-system-aarch64 -M virt` have ttyAMA0 instead of ttyS0. 
+   So I'd rather avoid specifying every possible `console=` combination)
+   * Secure boot (SHIM) is removed from the Live ISO as the old version of U-Boot on the Ten64
+   doesn't support the secure boot EFI protocol. Once the Ten64 firmware is updated this can be
+   put back in.
+*  Previously this repository generated a qcow2 image, but this is currently
+not possible due to recent changes in vyos-build. Hopefully it can be
+bought back soon.
