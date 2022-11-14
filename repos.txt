@@ -1,8 +1,8 @@
 libvyosconfig
-vyos-1x
+https://github.com/mcbridematt/vyos-1x.git;d591cacbde61bf71af7b8941a784d21367d1ba0c
 vyatta-op
-vyatta-cfg-system
-vyatta-op-firewall
+https://github.com/mcbridematt/vyatta-cfg-system.git;fix-grub-arm64
+vyatta-cfg-qos
 vyatta-op-qos
 vyatta-cluster
 vyatta-config-mgmt
@@ -16,4 +16,10 @@ libnss-mapuser
 vyatta-cfg
 vyatta-wanloadbalance
 vyos-utils
-vyatta-conntrack
+vyos-user-utils
+vyos-http-api-tools
+vyatta-biosdevname
+udp-broadcast-relay
+vyos-live-build
+live-boot
+https://salsa.debian.org/python-team/packages/python-inotify.git
