@@ -50,6 +50,10 @@ for i in $REPOS; do
 	fi
 	if [ "${PACKAGENAME}" = "ipaddrcheck" ]; then
 		rm src/*.o
+	elif [ "${PACKAGENAME}" = "python-inotify" ]; then
+		patch -p1 -i "${PATCHES_DIR}/python-inotify-disable-test_renames.patch"
+	elif [ "${PACKAGENAME}" = "vyos-live-build" ]; then
+		patch -p1 -i "${PATCHES_DIR}/vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
 	fi
 	dpkg-buildpackage -b -us -uc -tc
 	cd "${BASEDIR}"

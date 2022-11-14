@@ -1,0 +1,26 @@
+From a786ddea4b0c07031a233a534fb132743711fe1c Mon Sep 17 00:00:00 2001
+From: Mathew McBride <matt@traverse.com.au>
+Date: Mon, 7 Nov 2022 08:29:37 +0000
+Subject: [PATCH] python-inotify: disable test_renames
+
+Fails when building under a container
+---
+ debian/rules | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/debian/rules b/debian/rules
+index 686b0c1..8d27fea 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -1,7 +1,7 @@
+ #!/usr/bin/make -f
+ 
+ export PYBUILD_NAME=python-inotify
+-export PYBUILD_TEST_ARGS=-k 'not test__cycle'
++export PYBUILD_TEST_ARGS=-k 'not test__cycle and not test__renames'
+ 
+ %:
+ 	dh $@ --with python3 --buildsystem=pybuild
+-- 
+2.30.2
+
