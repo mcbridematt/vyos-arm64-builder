@@ -38,11 +38,18 @@ Graham Hayes built his own version here: [https://github.com/grahamhayes/vyos-bu
 
 
 # Usage:
-Run ./build.sh to build the 'vyos-build' container
+My `vyos-build` branch is setup as a submodule of this repository, so you should do a
+recursive clone first:
+
+```
+git clone --recursive https://github.com/mcbridematt/vyos-arm64-builder.git
+```
+
+Run ./build.sh (as root or sudo) to build the 'vyos-build' container
 and then packages and image.
 
 ```
-./build.sh
+sudo ./build.sh
 ```
 
 An ISO image will be generated under `vyos-build/build/vyos-{VYOS_VERSION}.{YYYYMMDDHHMM}-arm64.iso`
