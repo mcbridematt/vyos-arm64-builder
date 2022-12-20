@@ -1,7 +1,7 @@
 require "pl"
 
 function extractValue(packagestring, key)
-	local matchsequence = "'"..key.."':%s?'+([%w%-%/:%.%%]+)'+,"
+	local matchsequence = "'"..key.."':%s?'+([%w_%-%/:%.%%]+)'+,"
 	local valueit = string.gmatch(packagestring,matchsequence)
 	local thismatch = nil
 	for match in valueit do
