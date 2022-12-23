@@ -20,13 +20,17 @@ cd "${PACKAGES_DIR}"
 for d in $(find -name Jenkinsfile -exec dirname {} \;); do
 	echo "BUILDING PACKAGE ${d}"
 	cd "${d}"
-	lua ../../../runjenkins.lua || :
-	find -name \*.deb -exec cp {} "${PACKAGES_DIR}" \;
+	if [ ! -f ".done" ]; then
+		lua ../../../runjenkins.lua
+		find -name \*.deb -exec cp {} "${PACKAGES_DIR}" \; && touch ".done"
+	fi
 	cd "${PACKAGES_DIR}"
 done
 
 # Workaround for XDP compilation (done by gcc-multilib on other platforms)
-ln -s /usr/include/aarch64-linux-gnu/asm /usr/include/asm
+if [ ! -s "/usr/include/asm" ]; then
+	sudo ln -s /usr/include/aarch64-linux-gnu/asm /usr/include/asm
+fi
 
 cd "${BASEDIR}"
 REPOS=$(cat repos.txt)
@@ -35,8 +39,13 @@ eval $(opam env --root=/opt/opam --set-root)
 for i in $REPOS; do
 	PACKAGENAME=$(echo "${i}" | awk -F ';' '{print $1}')
 	PACKAGECOMMIT=$(echo "${i}" | awk -F ';' '{print $2}')
+	PACKAGE_FOLDER_NAME=$(echo "${PACKAGENAME}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
+	echo "Considering ${PACKAGENAME} ${PACKAGE_FOLDER_NAME}"
+	if [ -f "build/${PACKAGE_FOLDER_NAME}/.done" ]; then
+		echo "Package ${PACKAGE_FOLDER_NAME} has already been compiled, skipping"
+		continue
+	fi
 	if [[ "${PACKAGENAME}" = https://* ]]; then
-		PACKAGE_FOLDER_NAME=$(echo "${PACKAGENAME}" | awk -F '/' '{print $NF}' | sed "s/\.git//g")
 		git clone "${PACKAGENAME}" "build/${PACKAGE_FOLDER_NAME}"
 		PACKAGENAME="${PACKAGE_FOLDER_NAME}"
 	else
@@ -53,10 +62,10 @@ for i in $REPOS; do
 	elif [ "${PACKAGENAME}" = "vyos-live-build" ]; then
 		patch -p1 -i "../../vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
 	fi
-	dpkg-buildpackage -b -us -uc -tc
+	dpkg-buildpackage -b -us -uc -tc && touch ".done"
 	cd ../..
 done
 
 # Use our copy of live-build to do image building
-dpkg -i build/live-build*.deb
+sudo dpkg -i build/live-build*.deb
 cp build/*.deb vyos-build/packages/
