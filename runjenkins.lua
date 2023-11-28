@@ -55,7 +55,7 @@ while hasnextpackage do
 		package_clone_success = true
 	end
 	if (package_clone_success) then
-		local buildcmd = extractBuildCmd(thispkg)
+		local buildcmd = "yes | mk-build-deps --install --remove\n" .. extractBuildCmd(thispkg)
 		utils.writefile(packagename .. "/jenkins_build_cmd.sh",buildcmd)
 		packages[#packages+1] = packagename
 	else
@@ -64,9 +64,14 @@ while hasnextpackage do
 end
 for i,packagename in ipairs(packages) do
 	print("Doing compile for " .. packagename)
-	local package_build_success = utils.executeex("cd "  .. packagename .. " && sh jenkins_build_cmd.sh")
+	local package_build_success,package_build_ret,package_build_stdout,package_build_stderr = utils.executeex("cd "  .. packagename .. " && sh jenkins_build_cmd.sh 2>&1")
 	if (package_build_success ~= true) then
 		print("Error: " .. packagename .. " did not build successfully")
+		print("Return code: " .. tostring(package_build_ret))
+		print("stdout: ")
+		print(package_build_stdout)
+		print("------------------------------------------------------")
+		os.exit(1)
 	end
 	print("Compile task for " .. packagename .. " done")
 end

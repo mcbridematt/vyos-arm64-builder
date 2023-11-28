@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 export DEBEMAIL="test@example.com"
 BASEDIR=$(dirname $(readlink -f "$0"))
@@ -55,6 +55,7 @@ for i in $REPOS; do
 	elif [ "${PACKAGENAME}" = "vyos-live-build" ]; then
 		patch -p1 -i "${PATCHES_DIR}/vyos-live-build-traverse-only-disable-iso-secure-boot.patch"
 	fi
+	echo "y" | mk-build-deps --install --remove
 	dpkg-buildpackage -b -us -uc -tc
 	cd "${BASEDIR}"
 done
@@ -62,3 +63,4 @@ done
 # Use our copy of live-build to do image building
 dpkg -i build/live-build*.deb
 cp build/*.deb vyos-build/packages/
+find vyos-build/packages/ -name '*-build-deps*deb' -exec rm {} \;
