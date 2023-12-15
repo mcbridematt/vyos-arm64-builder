@@ -1,7 +1,7 @@
 require "pl"
 
 function extractValue(packagestring, key)
-	local matchsequence = "'"..key.."':%s?'+([%w%-%/:%.%%]+)'+,"
+	local matchsequence = "'"..key.."':%s?'+([%w%-_%/:%.%%]+)'+,"
 	local valueit = string.gmatch(packagestring,matchsequence)
 	local thismatch = nil
 	for match in valueit do
@@ -41,7 +41,7 @@ while hasnextpackage do
 	local scmcommit = extractValue(thispkg,"scmCommit")
 	local package_clone_success = false
 	if (scmurl ~= nil) and (scmcommit ~= nil) then
-		print("Need to clone " .. scmurl .. " commit " .. scmcommit)
+		print(string.format("[%s] Need to clone %s commit %s", packagename, scmurl, scmcommit))
 		if (scmcommit:find("^%x+") ~= nil) then
 			package_clone_success = utils.execute("git clone " .. scmurl .. " " .. packagename .. " && cd " .. packagename .. " && git reset --hard " .. scmcommit)
 		else
