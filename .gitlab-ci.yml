@@ -1,0 +1,17 @@
+build:
+    stage: build
+    tags:
+        - arm64
+        - dynamic
+        - dynamic_runner_arm64_aws_shell
+    script:
+        - sudo ./build.sh
+    artifacts:
+        when: always
+        paths:
+            - vyos-build/build/*.iso
+            - vyos-build/packages/*.deb
+    except:
+      - merge_requests
+    variables:
+      GIT_SUBMODULE_STRATEGY: recursive
