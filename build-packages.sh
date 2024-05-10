@@ -16,6 +16,8 @@ if [ ! -d "vyos-build" ]; then
 	git clone https://github.com/vyos/vyos-build
 fi
 
+git config --global --add safe.directory $(readlink -f "vyos-build")
+
 PACKAGES_DIR=$(readlink -f "vyos-build/packages")
 cd "${PACKAGES_DIR}"
 
