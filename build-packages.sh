@@ -29,9 +29,6 @@ for d in $(find -name Jenkinsfile -exec dirname {} \;); do
 	cd "${PACKAGES_DIR}"
 done
 
-# Workaround for XDP compilation (done by gcc-multilib on other platforms)
-ln -s /usr/include/aarch64-linux-gnu/asm /usr/include/asm
-
 cd "${BASEDIR}"
 REPOS=$(cat repos.txt)
 mkdir -p build
