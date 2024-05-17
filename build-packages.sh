@@ -24,7 +24,7 @@ cd "${PACKAGES_DIR}"
 for d in $(find -name Jenkinsfile -exec dirname {} \;); do
 	echo "BUILDING PACKAGE ${d}"
 	cd "${d}"
-	lua ../../../runjenkins.lua || :
+	lua "${BASEDIR}/runjenkins.lua" || (echo "ERROR: Package ${d} failed" && exit 1)
 	find -name \*.deb -exec cp {} "${PACKAGES_DIR}" \;
 	cd "${PACKAGES_DIR}"
 done
