@@ -19,13 +19,15 @@ fi
 git config --global --add safe.directory $(readlink -f "vyos-build")
 
 PACKAGES_DIR=$(readlink -f "vyos-build/packages")
+DEBS_DIR=$(readlink -f "vyos-build/debs")
+mkdir -p "${DEBS_DIR}"
 cd "${PACKAGES_DIR}"
 
 for d in $(find -name Jenkinsfile -exec dirname {} \;); do
 	echo "BUILDING PACKAGE ${d}"
 	cd "${d}"
 	lua "${BASEDIR}/runjenkins.lua" || (echo "ERROR: Package ${d} failed" && exit 1)
-	find -name \*.deb -exec cp {} "${PACKAGES_DIR}" \;
+	find -name \*.deb -exec cp {} "${DEBS_DIR}" \;
 	cd "${PACKAGES_DIR}"
 done
 
@@ -61,5 +63,10 @@ done
 
 # Use our copy of live-build to do image building
 dpkg -i build/live-build*.deb
-cp build/*.deb vyos-build/packages/
+cp build/*.deb vyos-build/debs/
 find vyos-build/packages/ -name '*-build-deps*deb' -exec rm {} \;
+
+find vyos-build/debs -name '*build-deps*' -exec rm {} \;
+
+echo "LIST OF BUILT DEBS: "
+ls -la "vyos-build/debs/"
