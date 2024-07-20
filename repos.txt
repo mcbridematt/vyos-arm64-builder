@@ -1,9 +1,5 @@
 libvyosconfig
 vyos-1x
-vyatta-op
-vyatta-cfg-system
-vyatta-cluster
-vyos-world
 libpam-radius-auth
 ipaddrcheck
 vyatta-bash
